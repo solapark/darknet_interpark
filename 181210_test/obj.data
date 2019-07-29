@@ -1,0 +1,4 @@
+classes = 48
+train= /data1/sap/interpark_data/test/test.txt
+valid= /data1/sap/interpark_data/test/test.txt
+names = /home/sap/darknet_interpark/181210_test/obj.names
