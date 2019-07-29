@@ -1,0 +1,4 @@
+classes = 6
+train= /data1/sap/interpark_data/labels_bad_obj6/labels_bad_obj6.txt
+valid= /data1/sap/interpark_data/labels_bad_obj6/test.txt
+names = /home/sap/darknet_interpark/bad_obj6/bad_obj6.names
