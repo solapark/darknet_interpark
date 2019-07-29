@@ -304,6 +304,7 @@ void train_detector(char *datacfg, char *cfgfile, char *weightfile, int *gpus, i
             save_weights(net, buff);
         }
 
+		/*
         if (i >= (iter_save_last + 100) || i % 100 == 0) {
             iter_save_last = i;
 #ifdef GPU
@@ -313,6 +314,7 @@ void train_detector(char *datacfg, char *cfgfile, char *weightfile, int *gpus, i
             sprintf(buff, "%s/%s_last.weights", backup_directory, base);
             save_weights(net, buff);
         }
+		*/
         free_data(train);
     }
 #ifdef GPU
