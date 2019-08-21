@@ -1307,7 +1307,7 @@ void test_detector_classification(char *datacfg, char *cfgfile, char *weightfile
                 if (input[strlen(input) - 1] == 0x0d) input[strlen(input) - 1] = 0;
         }
         else {
-            printf("Enter Image Path: ");
+            //printf("Enter Image Path: ");
             fflush(stdout);
             input = fgets(input, 256, stdin);
             if (!input) break;
