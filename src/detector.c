@@ -754,6 +754,7 @@ float validate_detector_map(char *datacfg, char *cfgfile, char *weightfile, floa
     float *avg_iou_per_class = (float*)calloc(classes, sizeof(float));
     int *tp_for_thresh_per_class = (int*)calloc(classes, sizeof(int));
     int *fp_for_thresh_per_class = (int*)calloc(classes, sizeof(int));
+    int *fp_for_thresh_per_class_cm = (int*)calloc((classes + 1)*classes  , sizeof(int));
 
     for (t = 0; t < nthreads; ++t) {
         args.path = paths[i + t];
@@ -884,6 +885,24 @@ float validate_detector_map(char *datacfg, char *cfgfile, char *weightfile, floa
                             else{
                                 fp_for_thresh++;
                                 fp_for_thresh_per_class[class_id]++;
+                                int truth_class_id = -1;
+                                float max_iou = 0;
+                                for (int kk_idx = 0; kk_idx < num_labels; ++kk_idx)
+                                {
+                                    box t = { truth[kk_idx].x, truth[kk_idx].y, truth[kk_idx].w, truth[kk_idx].h };
+                                    float current_iou = box_iou(dets[i].bbox, t);
+                                    if (current_iou > iou_thresh) {
+                                        if (current_iou > max_iou) {
+                                            max_iou = current_iou;
+                                            truth_class_id = truth[j].id;
+                                        }
+                                    }
+                                }
+                                if (truth_class_id == -1) {
+                                    truth_class_id = classes + 1; //bg
+                                }
+                                fp_for_thresh_per_class_cm[truth_class_id * classes + class_id]++;
+
                             }
                         }
                     }
@@ -907,6 +926,15 @@ float validate_detector_map(char *datacfg, char *cfgfile, char *weightfile, floa
             free_image(val_resized[t]);
         }
     }
+
+    printf("\nfp cm\n");
+    for (int i = 0; i < classes+1; i++){
+        for (int j=0; j<classes; j++){
+            printf("%d\t", fp_for_thresh_per_class_cm[i * classes + j]);
+        }
+        printf("\n");
+    }
+
 
     if ((tp_for_thresh + fp_for_thresh) > 0)
         avg_iou = avg_iou / (tp_for_thresh + fp_for_thresh);
