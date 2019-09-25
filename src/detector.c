@@ -754,7 +754,7 @@ float validate_detector_map(char *datacfg, char *cfgfile, char *weightfile, floa
     float *avg_iou_per_class = (float*)calloc(classes, sizeof(float));
     int *tp_for_thresh_per_class = (int*)calloc(classes, sizeof(int));
     int *fp_for_thresh_per_class = (int*)calloc(classes, sizeof(int));
-    int *fp_for_thresh_per_class_cm = (int*)calloc((classes + 1)*classes  , sizeof(int));
+    int *fp_for_thresh_per_class_cm = (int*)calloc((classes + 1 + 1)*classes  , sizeof(int)); //bg, double_box
 
     for (t = 0; t < nthreads; ++t) {
         args.path = paths[i + t];
@@ -881,12 +881,14 @@ float validate_detector_map(char *datacfg, char *cfgfile, char *weightfile, floa
                                 ++tp_for_thresh;
                                 avg_iou_per_class[class_id] += max_iou;
                                 tp_for_thresh_per_class[class_id]++;
+                                fp_for_thresh_per_class_cm[class_id * classes + class_id]++;
                             }
                             else{
                                 fp_for_thresh++;
                                 fp_for_thresh_per_class[class_id]++;
                                 int truth_class_id = -1;
                                 float max_iou = 0;
+                                int max_idx = -1;
                                 for (int kk_idx = 0; kk_idx < num_labels; ++kk_idx)
                                 {
                                     box t = { truth[kk_idx].x, truth[kk_idx].y, truth[kk_idx].w, truth[kk_idx].h };
@@ -894,13 +896,21 @@ float validate_detector_map(char *datacfg, char *cfgfile, char *weightfile, floa
                                     if (current_iou > iou_thresh) {
                                         if (current_iou > max_iou) {
                                             max_iou = current_iou;
-                                            truth_class_id = truth[j].id;
+                                            truth_class_id = truth[kk_idx].id;
+                                            max_idx = kk_idx;
                                         }
                                     }
                                 }
                                 if (truth_class_id == -1) {
-                                    truth_class_id = classes + 1; //bg
+                                    truth_class_id = classes; //bg
+                                }else if(truth_class_id == class_id){
+                                    truth_class_id = classes + 1; //double_box
                                 }
+                                /*
+                                if(class_id == 8 && truth_class_id != 10){
+                                    printf("truth_class_id: %d, class_id:%d, box_x:%f, box_y:%f\n", truth_class_id, class_id, truth[max_idx].x, truth[max_idx].y);
+                                }
+                                */
                                 fp_for_thresh_per_class_cm[truth_class_id * classes + class_id]++;
 
                             }
@@ -927,11 +937,31 @@ float validate_detector_map(char *datacfg, char *cfgfile, char *weightfile, floa
         }
     }
 
-    printf("\nfp cm\n");
-    for (int i = 0; i < classes+1; i++){
+    printf("\ncm\n");
+    printf("\t");
+    for (int i = 0; i<classes; i++){
+         printf("%s\t", names[i]);
+    }
+    printf("bg\twhole\n");
+    for (int i = 0; i < classes+2; i++){
+        if(i<classes){
+            printf("%s\t", names[i]);
+        }else if(i == classes){
+            printf("bg\t");
+        }else{
+            printf("double\t");
+        }
         for (int j=0; j<classes; j++){
             printf("%d\t", fp_for_thresh_per_class_cm[i * classes + j]);
         }
+        int fn = 0;
+        int whole = 0;
+        if(i<classes) {
+            whole =truth_classes_count[i];
+            fn = whole - fp_for_thresh_per_class_cm[i*classes + i];    // false-negative = objects - true-positive
+            
+        }
+        printf("%d\t%d", fn, whole);
         printf("\n");
     }
 
