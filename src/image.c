@@ -651,6 +651,23 @@ void normalize_image2(image p)
     free(max);
 }
 
+image stack_image(image start, image* others, int size)
+{
+    int w = start.w;
+    int h = start.h;
+    int individual_c = start.c;
+    int whole_c = individual_c * size;
+
+    image result = make_image(w, h, whole_c);
+    memcpy(result.data, start.data, h*w*individual_c*sizeof(float));
+    for(int i = 1; i<size; i++){
+        int offset = i * h*w*individual_c*sizeof(float);
+        float* result_start_addr = offset + result.data;
+        memcpy(result_start_addr, others[i].data, h*w*individual_c*sizeof(float));
+    }
+    return result;
+}
+
 image copy_image(image p)
 {
     image copy = p;

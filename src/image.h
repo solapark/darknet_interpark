@@ -80,6 +80,7 @@ void print_image(image m);
 image make_random_image(int w, int h, int c);
 image make_empty_image(int w, int h, int c);
 image float_to_image(int w, int h, int c, float *data);
+image stack_image(image start, image* others, int size);
 image copy_image(image p);
 image load_image(char *filename, int w, int h, int c);
 //LIB_API image load_image_color(char *filename, int w, int h);

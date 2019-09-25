@@ -124,8 +124,7 @@ void train_detector(char *datacfg, char *cfgfile, char *weightfile, int *gpus, i
     args.jitter = jitter;
     args.num_boxes = l.max_boxes;
     args.d = &buffer;
-    //args.type = DETECTION_DATA;
-    args.type = net.data_load_type;
+    args.type = DETECTION_DATA;
     args.threads = 64;    // 16 or 64
 
     args.angle = net.angle;
@@ -886,6 +885,7 @@ float validate_detector_map(char *datacfg, char *cfgfile, char *weightfile, floa
                             else{
                                 fp_for_thresh++;
                                 fp_for_thresh_per_class[class_id]++;
+
                                 int truth_class_id = -1;
                                 float max_iou = 0;
                                 for (int kk_idx = 0; kk_idx < num_labels; ++kk_idx)
@@ -928,14 +928,11 @@ float validate_detector_map(char *datacfg, char *cfgfile, char *weightfile, floa
         }
     }
 
-    printf("\nfp cm\n");
     for (int i = 0; i < classes+1; i++){
         for (int j=0; j<classes; j++){
-            printf("%d\t", fp_for_thresh_per_class_cm[i * classes + j]);
-        }
+            printf("%d ", fp_for_thresh_per_class_cm[i * classes + j]);
         printf("\n");
     }
-
 
     if ((tp_for_thresh + fp_for_thresh) > 0)
         avg_iou = avg_iou / (tp_for_thresh + fp_for_thresh);

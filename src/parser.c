@@ -690,6 +690,19 @@ route_layer parse_route(list *options, size_params params, network net)
     return layer;
 }
 
+data_type get_data_load_type(char *s)
+{
+    if (strcmp(s, "DETECTION_DATA_STEREO")==0) {
+        printf("DETECTION_DATA_STEREO\n");
+        return DETECTION_DATA_STEREO;
+    }
+    if (strcmp(s, "DETECTION_DATA")==0) {
+        printf("DETECTION_DATA\n");
+        return DETECTION_DATA;
+    }
+    fprintf(stderr, "going with defualt DETECTION_DATA\n", s);
+    return DETECTION_DATA;
+}
 learning_rate_policy get_policy(char *s)
 {
     if (strcmp(s, "random")==0) return RANDOM;
@@ -723,6 +736,9 @@ void parse_net_options(list *options, network *net)
     net->batch /= subdivs;
     net->batch *= net->time_steps;
     net->subdivisions = subdivs;
+
+    char* data_load_type = option_find_str(options, "data_load_type", "DETECTION_DATA");
+    net->data_load_type = get_data_load_type(data_load_type);
 
     net->adam = option_find_int_quiet(options, "adam", 0);
     if(net->adam){
