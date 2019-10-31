@@ -1578,8 +1578,8 @@ void test_detector(char *datacfg, char *cfgfile, char *weightfile, char *filenam
         free_image(sized);
 
         if (!dont_show) {
-            wait_key_cv(120);
-            //wait_until_press_key_cv();
+            //wait_key_cv(120);
+            wait_until_press_key_cv();
             //destroy_all_windows_cv();
         }
 

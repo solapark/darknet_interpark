@@ -64,7 +64,6 @@ void forward_network_gpu(network net, network_state state)
             cudaStreamSynchronize(get_cuda_stream());
         state.input = l.output_gpu;
         //cudaDeviceSynchronize();
-/*
         cuda_pull_array(l.output_gpu, l.output, l.batch*l.outputs);
         if (l.out_w >= 0 && l.out_h >= 1 && l.c >= 3) {
             int j;
@@ -74,14 +73,15 @@ void forward_network_gpu(network net, network_state state)
                 memcpy(img.data + l.out_w*l.out_h * 1, l.output + l.out_w*l.out_h*j, l.out_w*l.out_h * 1 * sizeof(float));
                 memcpy(img.data + l.out_w*l.out_h * 2, l.output + l.out_w*l.out_h*j, l.out_w*l.out_h * 1 * sizeof(float));
                 char buff[256];
-                sprintf(buff, "layer-%d slice-%d", i, j);
-                show_image(img, buff);
+                sprintf(buff, "activation_map/layer-%d_slice-%d", i, j);
+                //show_image(img, buff);
                 save_image(img, buff);
             }
-            cvWaitKey(0); // wait press-key in console
-            cvDestroyAllWindows();
+            //cvWaitKey(0); // wait press-key in console
+            //wait_key_cv(0); // wait press-key in console
+            //cvDestroyAllWindows();
+            //destroy_all_windows_cv();
         }
-*/
     }
     //cudaStreamSynchronize(get_cuda_stream());   // sync CUDA-functions
     //cudaDeviceSynchronize();
