@@ -1463,7 +1463,7 @@ void print_image(image m)
 image collapse_images_vert(image *ims, int n)
 {
     int color = 1;
-    int border = 1;
+    int border = 0;
     int h,w,c;
     w = ims[0].w;
     h = (ims[0].h + border) * n - border;
