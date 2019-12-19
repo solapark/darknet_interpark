@@ -317,7 +317,10 @@ void draw_detections_v3(image im, detection *dets, int num, float thresh, char *
     int i;
     for (i = 0; i < selected_detections_num; ++i) {
         const int best_class = selected_detections[i].best_class;
-        printf("%s: %.0f%%", names[best_class],    selected_detections[i].det.prob[best_class] * 100);
+        char grid[100];
+        sprintf(grid, " %d, %d, %d, %d", selected_detections[i].det.row, selected_detections[i].det.col, selected_detections[i].det.layer_num, selected_detections[i].det.anchor);
+        printf("%s: %.0f%% %s", names[best_class],    selected_detections[i].det.prob[best_class] * 100, grid);
+        //printf("%s: %.0f%%", names[best_class],    selected_detections[i].det.prob[best_class] * 100);
         if (ext_output)
             printf("\t(left_x: %4.0f   top_y: %4.0f   width: %4.0f   height: %4.0f)\n",
                 round((selected_detections[i].det.bbox.x - selected_detections[i].det.bbox.w / 2)*im.w),
@@ -408,6 +411,9 @@ void draw_detections_v3(image im, detection *dets, int num, float thresh, char *
 				sprintf(prob, " %.0f", selected_detections[i].det.prob[selected_detections[i].best_class] * 100);
 				//char prob = (char)(selected_detections[i].det.prob[selected_detections[i].best_class] * 100);
                 strcat(labelstr, prob);
+				char grid[100];
+				sprintf(grid, " %d, %d, %d, %d", selected_detections[i].det.row, selected_detections[i].det.col, selected_detections[i].det.layer_num, selected_detections[i].det.anchor);
+                strcat(labelstr, grid);
                 int j;
                 for (j = 0; j < classes; ++j) {
                     if (selected_detections[i].det.prob[j] > thresh && j != selected_detections[i].best_class) {

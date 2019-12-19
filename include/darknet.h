@@ -717,6 +717,10 @@ typedef struct detection{
     float *mask;
     float objectness;
     int sort_class;
+    int row;
+    int col;
+    int anchor;
+    int layer_num;
 } detection;
 
 // matrix.h
