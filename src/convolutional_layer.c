@@ -1196,6 +1196,7 @@ image *get_weights(convolutional_layer l)
     image *weights = (image *)calloc(l.n, sizeof(image));
     int i;
     for (i = 0; i < l.n; ++i) {
+        printf("c : %d ", i);
         weights[i] = copy_image(get_convolutional_weight(l, i));
         normalize_image(weights[i]);
         /*

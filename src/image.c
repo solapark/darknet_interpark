@@ -626,6 +626,7 @@ void normalize_image(image p)
     for(i = 0; i < p.c*p.w*p.h; ++i){
         p.data[i] = (p.data[i] - min)/(max-min);
     }
+    printf("min max : %f %f\n", min, max);
 }
 
 void normalize_image2(image p)

@@ -638,6 +638,7 @@ void visualize_network(network net)
         layer l = net.layers[i];
         //if(l.type == CONVOLUTIONAL){
         if(l.type == CONVOLUTIONAL && (i == 81 || i == 93 || i == 105)){
+            printf("layer : %d\n", i);
             prev = visualize_convolutional_layer(l, buff, prev);
         }
     }
