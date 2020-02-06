@@ -64,6 +64,7 @@ void forward_network_gpu(network net, network_state state)
             cudaStreamSynchronize(get_cuda_stream());
         state.input = l.output_gpu;
         //cudaDeviceSynchronize();
+        /*
         cuda_pull_array(l.output_gpu, l.output, l.batch*l.outputs);
         if (l.out_w >= 0 && l.out_h >= 1 && l.c >= 3) {
             int j;
@@ -82,6 +83,7 @@ void forward_network_gpu(network net, network_state state)
             //cvDestroyAllWindows();
             //destroy_all_windows_cv();
         }
+        */
     }
     //cudaStreamSynchronize(get_cuda_stream());   // sync CUDA-functions
     //cudaDeviceSynchronize();

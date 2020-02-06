@@ -1021,31 +1021,50 @@ void free_network(network net)
 #endif
 }
 
-void wgt2zero(network net)
+void wgt2zero(network * net)
 {
     int layer_idx = 93;
     int out_channel_idx = 6; 
     int in_channel_size = 119;
     int in_channel_idx[119] = {3,	4,	8,	18,	26,	27,	30,	32,	39,	42,	54,	58,	61,	71,	75,	88,	94,	98,	99,	105,	111,	116,	117,	121,	126,	132,	133,	136,	137,	146,	148,	150,	157,	158,	165,	167,	170,	171,	172,	177,	183,	184,	189,	196,	201,	204,	213,	216,	227,	229,	231,	232,	234,	237,	238,	241,	242,	245,	249,	251,	254,	258,	268,	273,	278,	279,	284,	286,	287,	290,	291,	292,	295,	296,	298,	304,	308,	310,	312,	314,	318,	324,	327,	328,	333,	334,	341,	345,	346,	349,	353,	365,	368,	372,	376,	379,	392,	420,	423,	438,	442,	454,	458,	459,	466,	469,	470,	474,	479,	480,	482,	483,	484,	486,	491,	495,	499,	501,	509};
 
-    layer *l = &net.layers[layer_idx];
-    const size_t filter_size = l->size*l->size*l->c / l->groups;
-    printf("l->type==CONVOLUTIONAL : %d\n", l->type==CONVOLUTIONAL); 
+    //layer *l = &(net->layers[layer_idx]);
+    layer l = net->layers[layer_idx];
+    //layer l = net.layers[layer_idx];
+    //const size_t filter_size = l->size*l->size*l->c / l->groups;
+    const size_t filter_size = l.size*l.size*l.c / l.groups;
+    //printf("l->type==CONVOLUTIONAL : %d\n", l->type==CONVOLUTIONAL); 
+    printf("l->type==CONVOLUTIONAL : %d\n", l.type==CONVOLUTIONAL); 
     printf("filter_size : %d\n", filter_size); //512
-    printf("l->n : %d\n", l->n); //21
+    //printf("l->n : %d\n", l->n); //21
+    printf("l->n : %d\n", l.n); //21
     for(int i=0; i<filter_size; i++){
         int w_index = out_channel_idx*filter_size + i;
-        printf("%f\n", l->weights[w_index]);
+        //printf("%f\n", l->weights[w_index]);
+        //printf("%f\n", l.weights[w_index]);
+        //printf("%f\n", (net.layers[layer_idx].weights[w_index]);
+        printf("%f\n", net->layers[layer_idx].weights[w_index]);
     }
-    for(int i=0; i<in_channel_size; i++){
-        int w_index = out_channel_idx*filter_size + in_channel_idx[i];
-        l->weights[w_index] = 0;
+    //for(int i=0; i<in_channel_size; i++){
+    for(int i=0; i<filter_size; i++){
+        //int w_index = out_channel_idx*filter_size + in_channel_idx[i];
+        int w_index = out_channel_idx*filter_size + i;
+        //l->weights[w_index] = 0;
+        //l.weights[w_index] = 0;
+        //net.layers[layer_idx].weights[w_index] = 0;
+        net->layers[layer_idx].weights[w_index] = 0;
     }
-    printf("af\n");
+    printf("af-------------------------------\n");
+    /*
     for(int i=0; i<filter_size; i++){
         int w_index = out_channel_idx*filter_size + i;
-        printf("%f\n", l->weights[w_index]);
+        //printf("%f\n", l->weights[w_index]);
+        //printf("%f\n", (net->layers[layer_idx]).weights[w_index]);
+        //printf("%f\n", (net.layers[layer_idx].weights[w_index]);
+        printf("%f\n", net->layers[layer_idx].weights[w_index]);
     }
+    */
+    push_convolutional_layer(net->layers[layer_idx]);
 }
 
 

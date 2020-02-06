@@ -421,7 +421,12 @@ void set_weight(char *cfgfile, char *weightfile, char* new_weightfile)
     if(weightfile){
         load_weights(&net, weightfile);
     }
-    wgt2zero(net);
+    wgt2zero(&net);
+    for(int i=0; i<512; i++){
+        int w_index = 6*512 + i;
+        printf("%f\n", net.layers[93].weights[w_index]);
+    }
+    
     save_weights(net, new_weightfile);
 }
 

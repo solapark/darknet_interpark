@@ -1373,6 +1373,7 @@ void test_detector_classification(char *datacfg, char *cfgfile, char *weightfile
         }
         //image im;
         //image sized = load_image_resize(input, net.w, net.h, net.c, &im);
+        printf("%s\n", buff);
         image im = load_image(input, 0, 0, net.c);
         image sized;
         if(letter_box) sized = letterbox_image(im, net.w, net.h);
