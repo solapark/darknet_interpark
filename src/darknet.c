@@ -415,6 +415,28 @@ void denormalize_net(char *cfgfile, char *weightfile, char *outfile)
     save_weights(net, outfile);
 }
 
+void get_weight(char *cfgfile, char *weightfile, int layer_idx, int filter_idx)
+{
+    printf("cfg : %s\nwgt : %s\n", cfgfile, weightfile);
+    network net = parse_network_cfg(cfgfile);
+    if(weightfile){
+        load_weights(&net, weightfile);
+    }
+    layer l = net.layers[layer_idx];
+    const size_t filter_size = l.size*l.size*l.c / l.groups;
+    printf("layer_idx : %d, filter_idx : %d, filter_size : %d\n", layer_idx, filter_idx, filter_size);
+    printf("weight\n");
+    for(int i=0; i<filter_size; i++){
+        int w_index = filter_idx*filter_size + i;
+        printf("%f\n", l.weights[w_index]);
+    }
+    printf("bias : %f\n", l.biases[filter_idx]);
+    if (l.batch_normalize) {
+        printf("rolling_mean : %f\n", l.rolling_mean[filter_idx]);
+        printf("rolling_variance : %f\n", l.rolling_variance[filter_idx]);
+    }
+}
+
 void set_weight(char *cfgfile, char *weightfile, char* new_weightfile)
 {
     network net = parse_network_cfg(cfgfile);
@@ -546,6 +568,8 @@ int main(int argc, char **argv)
         partial(argv[2], argv[3], argv[4], atoi(argv[5]));
     } else if (0 == strcmp(argv[1], "average")){
         average(argc, argv);
+    } else if (0 == strcmp(argv[1], "getweight")){
+        get_weight(argv[2], argv[3], atoi(argv[4]), atoi(argv[5]));
     } else if (0 == strcmp(argv[1], "setweight")){
         set_weight(argv[2], argv[3], argv[4]);
     } else if (0 == strcmp(argv[1], "visualize")){
